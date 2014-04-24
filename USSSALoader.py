@@ -58,7 +58,7 @@ def getNameList():
 
 def downloadNames():
     u = urlopen('https://github.com/downloads/sholiday/genderPredictor/names.zip')
-    localFile = open('names.zip', 'w')
+    localFile = open('names.zip', 'wb')
     localFile.write(u.read())
     localFile.close()
 
