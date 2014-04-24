@@ -3,7 +3,6 @@
 """
 genderPredictor.py
 """
-
 from nltk import NaiveBayesClassifier, classify
 import USSSALoader
 import fi_loader
@@ -82,11 +81,11 @@ class genderPredictor():
 if __name__ == "__main__":
     gp = genderPredictor()
     accuracy = gp.trainAndTest()
-    print 'Accuracy: %f' % accuracy
-    print 'Most Informative Features'
+    print('Accuracy: %f' % accuracy)
+    print('Most Informative Features')
     feats = gp.getMostInformativeFeatures(10)
     for feat in feats:
-        print '\t%s = %s' % feat
+        print('\t%s = %s' % feat)
 
     print('\n')
     for name in ['Eero', 'Jussi', 'Suvi', 'Tuulikki']:
