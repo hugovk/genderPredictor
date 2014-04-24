@@ -1,30 +1,25 @@
 #!/usr/bin/env python
 # encoding: utf-8
 """
-USSSALoader.py
+fi_loader.py
 """
+import glob
 import csv
 import os
 import pickle
-import urllib2
-from zipfile import ZipFile
+
 
 def getNameList():
-    if not os.path.exists('names.pickle'):
-        print 'names.pickle does not exist, generating'
-        if not os.path.exists('names.zip'):
-            print 'names.zip does not exist, downloading from GitHub'
-            downloadNames()
-        else:
-            print 'names.zip exists, not downloading'
+    if not os.path.exists('fi_names.pickle'):
+        print 'fi_names.pickle does not exist, generating'
 
         print 'Extracting names from names.zip'
-        namesDict = extractNamesDict()
+        namesDict = get_names_from_txts()
 
         maleNames = list()
         femaleNames = list()
 
-        print 'Sorting Names'
+        print 'Sorting names'
         for name in namesDict:
             counts = namesDict[name]
             tuple = (name, counts[0], counts[1])
@@ -35,50 +30,42 @@ def getNameList():
 
         names = (maleNames, femaleNames)
 
-        print 'Saving names.pickle'
-        fw = open('names.pickle', 'wb')
+        print 'Saving fi_names.pickle'
+        fw = open('fi_names.pickle', 'wb')
         pickle.dump(names, fw, -1)
         fw.close()
-        print 'Saved names.pickle'
+        print 'Saved fi_names.pickle'
     else:
-        print 'names.pickle exists, loading data'
-        f = open('names.pickle', 'rb')
+        print 'fi_names.pickle exists, loading data'
+        f = open('fi_names.pickle', 'rb')
         names = pickle.load(f)
-        print 'names.pickle loaded'
+        print 'fi_names.pickle loaded'
 
     print '%d male names loaded, %d female names loaded' % (len(names[0]), len(names[1]))
-
     return names
 
 
-def downloadNames():
-    u = urllib2.urlopen('https://github.com/downloads/sholiday/genderPredictor/names.zip')
-    localFile = open('names.zip', 'w')
-    localFile.write(u.read())
-    localFile.close()
-
-
-def extractNamesDict():
-    zf = ZipFile('names.zip', 'r')
-    filenames = zf.namelist()
+def get_names_from_txts():
+    filenames = glob.glob('finnish_*male_given_names.txt')
 
     names = dict()
-    genderMap = {'M': 0, 'F': 1}
 
     for filename in filenames:
-        file = zf.open(filename, 'r')
+        file = open(filename, 'r')
         rows = csv.reader(file, delimiter=',')
 
         for row in rows:
             name = row[0].lower()
-            gender = genderMap[row[1]]
-            count = int(row[2])
-
+            if "_male_" in filename:
+                gender = 0
+            elif "_female_" in filename:
+                gender = 1
+            count = 1
             if name not in names:
                 names[name] = [0, 0]
             names[name][gender] = names[name][gender]+count
-
         file.close()
+
         print '\tImported %s' % filename
     return names
 
