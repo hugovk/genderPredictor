@@ -9,9 +9,9 @@ import pickle
 from zipfile import ZipFile
 
 try:
-    import urllib2.urlopen as urlopen
+    from urllib.request import urlopen
 except ImportError:
-    import urllib.request.urlopen as urlopen
+    from urllib2 import urlopen
 
 
 def getNameList():
