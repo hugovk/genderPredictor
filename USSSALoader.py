@@ -6,8 +6,13 @@ USSSALoader.py
 import csv
 import os
 import pickle
-import urllib2
 from zipfile import ZipFile
+
+try:
+    import urllib2.urlopen as urlopen
+except ImportError:
+    import urllib.request.urlopen as urlopen
+
 
 def getNameList():
     if not os.path.exists('names.pickle'):
@@ -52,7 +57,7 @@ def getNameList():
 
 
 def downloadNames():
-    u = urllib2.urlopen('https://github.com/downloads/sholiday/genderPredictor/names.zip')
+    u = urlopen('https://github.com/downloads/sholiday/genderPredictor/names.zip')
     localFile = open('names.zip', 'w')
     localFile.write(u.read())
     localFile.close()
